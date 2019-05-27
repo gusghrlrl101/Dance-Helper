@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'base.ui'
+#
+# Created by: PyQt5 UI code generator 5.5.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 600)
+        MainWindow.setAutoFillBackground(True)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(680, 490, 99, 27))
+        self.pushButton.setObjectName("pushButton")
+        self.btn_fileOpen = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_fileOpen.setGeometry(QtCore.QRect(530, 10, 261, 61))
+        self.btn_fileOpen.setObjectName("btn_fileOpen")
+        self.label_img = QtWidgets.QLabel(self.centralwidget)
+        self.label_img.setGeometry(QtCore.QRect(20, 10, 501, 321))
+        self.label_img.setAutoFillBackground(True)
+        self.label_img.setText("")
+        self.label_img.setObjectName("label_img")
+        self.label_size = QtWidgets.QLabel(self.centralwidget)
+        self.label_size.setGeometry(QtCore.QRect(120, 380, 191, 41))
+        self.label_size.setText("")
+        self.label_size.setObjectName("label_size")
+        self.label_frame = QtWidgets.QLabel(self.centralwidget)
+        self.label_frame.setGeometry(QtCore.QRect(120, 420, 191, 41))
+        self.label_frame.setText("")
+        self.label_frame.setObjectName("label_frame")
+        self.label_size_ = QtWidgets.QLabel(self.centralwidget)
+        self.label_size_.setGeometry(QtCore.QRect(10, 380, 111, 41))
+        self.label_size_.setObjectName("label_size_")
+        self.label_frame_ = QtWidgets.QLabel(self.centralwidget)
+        self.label_frame_.setGeometry(QtCore.QRect(10, 420, 111, 41))
+        self.label_frame_.setObjectName("label_frame_")
+        self.label_path_ = QtWidgets.QLabel(self.centralwidget)
+        self.label_path_.setGeometry(QtCore.QRect(10, 340, 111, 41))
+        self.label_path_.setObjectName("label_path_")
+        self.label_path = QtWidgets.QLabel(self.centralwidget)
+        self.label_path.setGeometry(QtCore.QRect(120, 340, 191, 41))
+        self.label_path.setText("")
+        self.label_path.setObjectName("label_path")
+        self.btn_process = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_process.setGeometry(QtCore.QRect(530, 80, 261, 61))
+        self.btn_process.setObjectName("btn_process")
+        self.label_time = QtWidgets.QLabel(self.centralwidget)
+        self.label_time.setGeometry(QtCore.QRect(120, 460, 191, 41))
+        self.label_time.setText("")
+        self.label_time.setObjectName("label_time")
+        self.label_time_ = QtWidgets.QLabel(self.centralwidget)
+        self.label_time_.setGeometry(QtCore.QRect(10, 460, 111, 41))
+        self.label_time_.setObjectName("label_time_")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 25))
+        self.menubar.setObjectName("menubar")
+        self.menuOpmlify = QtWidgets.QMenu(self.menubar)
+        self.menuOpmlify.setObjectName("menuOpmlify")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.toolBar = QtWidgets.QToolBar(MainWindow)
+        self.toolBar.setObjectName("toolBar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.menubar.addAction(self.menuOpmlify.menuAction())
+
+        self.retranslateUi(MainWindow)
+        self.pushButton.clicked.connect(MainWindow.hyunho_click)
+        self.btn_fileOpen.clicked.connect(MainWindow.open_file)
+        self.btn_process.clicked.connect(MainWindow.process)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.pushButton.setText(_translate("MainWindow", "Test Button"))
+        self.btn_fileOpen.setText(_translate("MainWindow", "Open File"))
+        self.label_size_.setText(_translate("MainWindow", "Size: "))
+        self.label_frame_.setText(_translate("MainWindow", "Frame: "))
+        self.label_path_.setText(_translate("MainWindow", "Path: "))
+        self.btn_process.setText(_translate("MainWindow", "Processing"))
+        self.label_time_.setText(_translate("MainWindow", "Expected Time: "))
+        self.menuOpmlify.setTitle(_translate("MainWindow", "Opmlify"))
+        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
+
