@@ -24,7 +24,7 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 			return
 
 		# get data
-		img, size, frame, time = self.make_thumbnail(self.file_name)
+		img, imageSize, frame, time, fps, length = self.make_thumbnail(self.file_name)
 		self.frame = int(frame)
 
 		# set data
@@ -32,9 +32,11 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		self.label_img.setScaledContents(True)
 		self.label_img.show()
 		self.label_path.setText(self.file_name)
-		self.label_size.setText(size)
+		self.label_imageSize.setText(imageSize)
 		self.label_frame.setText(frame)
 		self.label_time.setText(time)
+		self.label_fps.setText(fps)
+		self.label_length.setText(length)
 
 	def process(self):
 		if self.file_name is None:
@@ -53,11 +55,13 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		cap = cv2.VideoCapture(fileName)
 
 		# get info
+		fps = round(float(cap.get(cv2.CAP_PROP_FPS)), 2)
 		h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))    
 		w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  
 		frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-		time = str(frame * 25 / 60) + " minutes"
+		time = str(frame * 25 / 60) + " minute"
 		size = str(w) + " x " + str(h)
+		length = str(round(frame / fps, 2)) + " sec"
 
 		# capture first image
 		if cap.isOpened():
@@ -68,7 +72,7 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		img_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 		qImg = QImage(img_RGB.data, w, h, w * 3, QImage.Format_RGB888)
 
-		return QPixmap(qImg), size, str(frame), time
+		return QPixmap(qImg), size, str(frame), time, str(fps), length
 
 
 	def hyunho_click(self):

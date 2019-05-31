@@ -430,9 +430,10 @@ def run_single_fit(img,
     return params, images
 
 
-def openPose(img, gamma=1.0):
+def openPose(img, gamma=1.0, ui=False):
     params = dict()
-    params["model_folder"] = "../models/"
+    model_folder = ('' if ui else '../') + 'models'
+    params["model_folder"] = model_folder
     params["number_people_max"] = 1;
 
     opWrapper = op.WrapperPython()
@@ -442,8 +443,12 @@ def openPose(img, gamma=1.0):
     datum = op.Datum()
 
     # hyunho gamma
-    img2 = adjust_gamma(img, gamma=gamma)
-    datum.cvInputData = img2
+    if gamma != 1.0:
+        img2 = adjust_gamma(img, gamma=gamma)
+        datum.cvInputData = img2
+    else:
+        datum.cvInputData = img
+
     opWrapper.emplaceAndPop([datum])
 
     mydata = datum.poseKeypoints[0]
@@ -535,10 +540,44 @@ def smplify(img, out_path, out_video_dir, op_joints, op_confs, cnt, genders, mod
             cv2.imwrite(out_path.replace('.pkl', '.png'), vis[0])
 #            out.write(vis[0])
 
+def getFrames(temps, frame_cnt, ratio):
+    frames = []
+    cnt = 0
+    if ratio > 1.0:
+        for i, temp in enumerate(temps):
+            if cnt < int(i * ratio):
+                for _ in range(cnt, int(i * ratio)):
+                    frames.append(temps[i - 1])
+                    cnt += 1
+
+                    if cnt == frame_cnt:
+                        break
+
+            if cnt == frame_cnt:
+                break
+
+            frames.append(temp)
+            cnt += 1
+    elif ratio < 1.0:
+        for i, temp in enumerate(temps):
+            if cnt > int(i * ratio):
+                continue
+                    
+            frames.append(temp)
+            cnt += 1
+                    
+            if cnt == frame_cnt:
+                break
+    else:
+        frames = temps[:frame_cnt]
+    return frames
+
 
 def main(video="False",
          ui=False,
-         num=-1):
+         female=True,
+         num=-1,
+         gamma=1.0):
     n_betas=10
     flength=5000.
     pix_thsh=25.
@@ -571,7 +610,6 @@ def main(video="False",
     do_degrees = [0.]
 
     sph_regs = None
-    print "Reading genders..."
     # File storing information about gender in LSP
     with open(csv_dir) as f:
         genders = f.readlines()
@@ -594,40 +632,47 @@ def main(video="False",
         # first, openpose
         cap = cv2.VideoCapture(join(img_dir, video))
 
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
+        fps = float(cap.get(cv2.CAP_PROP_FPS))
         video_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))    
         video_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  
         frame_cnt = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        ratio = 10.0 / fps
 
-        if frame_cnt > 1200:
-            frame_cnt = 1200
+        # only 60 sec
+        if frame_cnt > 60.0 * fps:
+            frame_cnt = int(60.0 * fps)
+
+        if ratio > 1.0:
+            frame_cnt = int(frame_cnt * ratio)
+
+        # get captures
+        temps = []
+        cnt = 0
+        while cap.isOpened():
+            _, img = cap.read()
+            temps.append(img)
+
+            cnt += 1
+            if cnt == frame_cnt:
+                break
+        cap.release()
+
+        # get frames
+        frames = getFrames(temps, frame_cnt, ratio)
 
         # make openpose pkl
         op_pickle_path = join(out_video_dir, 'hyunho.pkl')
-        cnt = 0
         if not exists(op_pickle_path):
             temp_joints = []
             temp_confs = []
 
-            frames = []
-            while cap.isOpened():
-                print "making openpose...", cnt
-                _, img = cap.read()
-                temp_joint, temp_conf = openPose(img, 0.7)
-
+            # get openpose result
+            for frame in frames:
+                temp_joint, temp_conf = openPose(frame, gamma, ui)
                 temp_joints.append(temp_joint)
                 temp_confs.append(temp_conf)
 
-                cnt += 1
-                if cnt == frame_cnt:
-                        break
-            cap.release()
-
-            """
-            cnt = 0
-            for i, frame in enumerate(frames):
-            """ 
-
+            # save to 'hyunho.pkl'
             with open(op_pickle_path, 'w') as outf:
                 temp_params = dict()
                 temp_params['op_joints'] = temp_joints
@@ -640,15 +685,10 @@ def main(video="False",
             op_joints = op_datas['op_joints']
             op_confs = op_datas['conf']
 
-
-        op_view = False
         # view
+        op_view = False
         if op_view:
-            cap = cv2.VideoCapture(join(img_dir, video))
-            cnt = 0
-            while cap.isOpened():
-                _, img = cap.read()
-    
+            for img in frames:
                 for i, j in enumerate(op_joints[cnt]):
                     if op_confs[cnt][i] < 0.33:
                         temp_color = (0, 0, 255)
@@ -666,22 +706,13 @@ def main(video="False",
                     return
                 elif k == ord('q'):
                     break
-    
-                cnt += 1
-                if cnt == frame_cnt:
-                    break
-            cap.release()
 
 
-        op_filter = False
         # openpose pose filter
+        op_filter = False
         changed = []
         if op_filter:
-            cap = cv2.VideoCapture(join(img_dir, video))
-            cnt = 0
-            while cap.isOpened():
-                _, img = cap.read()
-
+            for img in frames:
                 for num, _ in enumerate(op_joints[cnt]):
                     joint = op_joints[cnt][num]
                     conf = op_confs[cnt][num]
@@ -717,25 +748,17 @@ def main(video="False",
                             for j in range(index_l + 1, index_r):
                                 op_confs[j][num] = - (conf_gradient * j + conf_bias)
                                 op_joints[j][num] = joint_gradient * j + joint_bias
-                cnt += 1
-                if cnt == frame_cnt:
-                    break
 
 
         # smplify
         max_proc = 5
         procs = []
-        cap = cv2.VideoCapture(join(img_dir, video))
-        cnt = 0
-        while cap.isOpened():
+        for cnt, img in enumerate(frames):
             if cnt <= num:
-                cnt += 1
                 continue
 
             print "video frame num: " + str(cnt)
             out_path = '%s/%04d.pkl' % (out_video_dir, cnt)
-
-            _, img = cap.read()
 
             if not exists(out_path) or cnt in changed:
                 if len(procs) < max_proc:
@@ -752,18 +775,12 @@ def main(video="False",
 
                 return cnt
 
-            cnt += 1
-            if cnt == frame_cnt:
-                    break
-
         if len(procs) > 0:
             for proc in procs:
                 proc.start()
             for proc in procs:
                 proc.join()
             procs[:] = []
-
-        cap.release()
 
         return cnt
 
