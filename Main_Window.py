@@ -1,3 +1,4 @@
+# -*- Encoding:UTF-8 -*- #
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from baseUI import Ui_MainWindow as Ui_MainWindow_base
@@ -9,14 +10,22 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
         	super(self.__class__, self).__init__()
 		self.setupUi(self)
 
-		self.file_name = None
-
+		self.file_name = ''
+		self.frame = -1
 
 	def open_file(self):
 		# open file
-		self.file_name, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Video (*.mp4 *.avi)')
+		file_name, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Video (*.mp4 *.avi)')
+
+		self.file_name = str(file_name)
+
+		# if cancel, do nothing
+		if self.file_name ==  '':
+			return
+
 		# get data
 		img, size, frame, time = self.make_thumbnail(self.file_name)
+		self.frame = int(frame)
 
 		# set data
 		self.label_img.setPixmap(img)
@@ -31,8 +40,13 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		if self.file_name is None:
 			QMessageBox.information(QWidget(), "Error", "Open File First")
 		else:
-			main(10, 5000., 25., 'user6.avi', True)
+			out_name = self.file_name.split('/')[-1]
 
+			num = 0
+			while num != self.frame - 1:
+				res = main(out_name, True, num)
+				num = res
+				print "@@@", res
 
 	def make_thumbnail(self, fileName):
 		# open video
@@ -62,3 +76,10 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 			print 'not open'
 		else:
 			print 'open'
+
+	def open_render(self): #폴더명 두 개 받아서 rendering해서 넘기면서 비교 가능하게
+		file_name1=''
+		file_name2=''
+		# sys(python render_similarity.py) 하면 될 듯?
+		# 아니면 imshow 대신에 QT에 띄울까
+		# reset, back, 유사도 측정 정도만 버튼 만들까

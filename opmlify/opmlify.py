@@ -536,18 +536,12 @@ def smplify(img, out_path, out_video_dir, op_joints, op_confs, cnt, genders, mod
 #            out.write(vis[0])
 
 
-def main(n_betas=10,
-         flength=5000.,
-         pix_thsh=25.,
-         video="False",
-         ui=False):
-    """Set up paths to image and joint data, saves results.
-    :param n_betas: number of shape coefficients considered during optimization
-    :param flength: camera focal length (an estimate)
-    :param pix_thsh: threshold (in pixel), if the distance between shoulder joints in 2D
-                     is lower than pix_thsh, the body orientation as ambiguous (so a fit is run on both
-                     the estimated one and its flip)
-    """
+def main(video="False",
+         ui=False,
+         num=-1):
+    n_betas=10
+    flength=5000.
+    pix_thsh=25.
 
     # Set up paths & load models.
     # Assumes 'models' in the 'code/' directory where this file is in.
@@ -600,9 +594,11 @@ def main(n_betas=10,
         # first, openpose
         cap = cv2.VideoCapture(join(img_dir, video))
 
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
         video_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))    
         video_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  
         frame_cnt = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
         if frame_cnt > 1200:
             frame_cnt = 1200
 
@@ -613,6 +609,7 @@ def main(n_betas=10,
             temp_joints = []
             temp_confs = []
 
+            frames = []
             while cap.isOpened():
                 print "making openpose...", cnt
                 _, img = cap.read()
@@ -625,6 +622,11 @@ def main(n_betas=10,
                 if cnt == frame_cnt:
                         break
             cap.release()
+
+            """
+            cnt = 0
+            for i, frame in enumerate(frames):
+            """ 
 
             with open(op_pickle_path, 'w') as outf:
                 temp_params = dict()
@@ -726,6 +728,10 @@ def main(n_betas=10,
         cap = cv2.VideoCapture(join(img_dir, video))
         cnt = 0
         while cap.isOpened():
+            if cnt <= num:
+                cnt += 1
+                continue
+
             print "video frame num: " + str(cnt)
             out_path = '%s/%04d.pkl' % (out_video_dir, cnt)
 
@@ -740,11 +746,16 @@ def main(n_betas=10,
                     proc.start()
                 for proc in procs:
                     proc.join()
+
                 procs[:] = []
+                cap.release()
+
+                return cnt
 
             cnt += 1
             if cnt == frame_cnt:
                     break
+
         if len(procs) > 0:
             for proc in procs:
                 proc.start()
@@ -752,9 +763,9 @@ def main(n_betas=10,
                 proc.join()
             procs[:] = []
 
-
         cap.release()
-        return
+
+        return cnt
 
 def adjust_gamma(image, gamma=1.0):
     image = image / 255.0
@@ -767,30 +778,9 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='run SMPLify on LSP dataset')
     parser.add_argument(
-        '--no_interpenetration',
-        default=False,
-        action='store_true',
-        help="Using this flag removes the interpenetration term, which speeds"
-        "up optimization at the expense of possible interpenetration.")
-    parser.add_argument(
-        '--n_betas',
-        default=10,
-        type=int,
-        help="Specify the number of shape coefficients to use.")
-    parser.add_argument(
-        '--flength',
-        default=5000,
-        type=float,
-        help="Specify value of focal length.")
-    parser.add_argument(
-        '--side_view_thsh',
-        default=25,
-        type=float,
-        help="This is thresholding value that determines whether the human is captured in a side view. If the pixel distance between the shoulders is less than this value, two initializations of SMPL fits are tried.")
-    parser.add_argument(
         '--video',
         default="False",
         help="Input Video Path")
     args = parser.parse_args()
 
-    main(args.n_betas, args.flength, args.side_view_thsh, args.video)
+    main(args.video)
