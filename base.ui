@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1313</width>
+    <height>910</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,24 +17,11 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>490</y>
-      <width>99</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test Button</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btn_fileOpen">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>10</y>
+      <x>320</x>
+      <y>40</y>
       <width>261</width>
       <height>61</height>
      </rect>
@@ -46,11 +33,17 @@
    <widget class="QLabel" name="label_img">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>501</width>
-      <height>321</height>
+      <x>70</x>
+      <y>50</y>
+      <width>240</width>
+      <height>180</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>480</width>
+      <height>360</height>
+     </size>
     </property>
     <property name="autoFillBackground">
      <bool>true</bool>
@@ -62,8 +55,8 @@
    <widget class="QLabel" name="label_imageSize">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>380</y>
+      <x>170</x>
+      <y>270</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -75,8 +68,8 @@
    <widget class="QLabel" name="label_frame">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>420</y>
+      <x>170</x>
+      <y>310</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -88,8 +81,8 @@
    <widget class="QLabel" name="label_imageSize_">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>380</y>
+      <x>60</x>
+      <y>270</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -101,8 +94,8 @@
    <widget class="QLabel" name="label_frame_">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>420</y>
+      <x>60</x>
+      <y>310</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -114,8 +107,8 @@
    <widget class="QLabel" name="label_path_">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>340</y>
+      <x>60</x>
+      <y>230</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -127,8 +120,8 @@
    <widget class="QLabel" name="label_path">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>340</y>
+      <x>170</x>
+      <y>230</y>
       <width>411</width>
       <height>41</height>
      </rect>
@@ -140,8 +133,8 @@
    <widget class="QPushButton" name="btn_process">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>80</y>
+      <x>320</x>
+      <y>120</y>
       <width>261</width>
       <height>61</height>
      </rect>
@@ -153,8 +146,8 @@
    <widget class="QLabel" name="label_time">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>460</y>
+      <x>170</x>
+      <y>350</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -166,8 +159,8 @@
    <widget class="QLabel" name="label_time_">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>460</y>
+      <x>60</x>
+      <y>350</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -179,8 +172,8 @@
    <widget class="QLabel" name="label_fps">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>420</y>
+      <x>440</x>
+      <y>310</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -192,8 +185,8 @@
    <widget class="QLabel" name="label_fps_">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>420</y>
+      <x>330</x>
+      <y>310</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -205,8 +198,8 @@
    <widget class="QLabel" name="label_length_">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>380</y>
+      <x>330</x>
+      <y>270</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -218,8 +211,8 @@
    <widget class="QLabel" name="label_length">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>380</y>
+      <x>440</x>
+      <y>270</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -231,8 +224,8 @@
    <widget class="QLabel" name="label_fileSize_">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>460</y>
+      <x>330</x>
+      <y>350</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -244,8 +237,8 @@
    <widget class="QLabel" name="label_fileSize">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>460</y>
+      <x>440</x>
+      <y>350</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -254,13 +247,217 @@
      <string/>
     </property>
    </widget>
+   <widget class="QPushButton" name="btnStartcompare">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>290</y>
+      <width>261</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Compare</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView2">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>90</y>
+      <width>121</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView1">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>90</y>
+      <width>121</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>60</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Model 1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>60</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Model 2</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_show1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>420</y>
+      <width>640</width>
+      <height>360</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>640</width>
+      <height>360</height>
+     </size>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_show2">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>420</y>
+      <width>640</width>
+      <height>360</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>640</width>
+      <height>360</height>
+     </size>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView3">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>90</y>
+      <width>151</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>60</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Model</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_show">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>290</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Video</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_sim_title">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>790</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Similarity:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_sim">
+    <property name="geometry">
+     <rect>
+      <x>950</x>
+      <y>790</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>0</y>
+      <width>471</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1] New Modeling</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>0</y>
+      <width>261</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2] View Model</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>0</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3] Show Video</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1313</width>
      <height>25</height>
     </rect>
    </property>
@@ -287,30 +484,14 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>hyunho_click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>680</x>
-     <y>528</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>696</x>
-     <y>568</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btn_fileOpen</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>open_file()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>790</x>
-     <y>103</y>
+     <x>530</x>
+     <y>98</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -325,12 +506,44 @@
    <slot>process()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>784</x>
-     <y>172</y>
+     <x>530</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
      <x>784</x>
      <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnStartcompare</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>start_render()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>696</x>
+     <y>308</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>764</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_show</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_video()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1217</x>
+     <y>292</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1279</x>
+     <y>377</y>
     </hint>
    </hints>
   </connection>
@@ -339,5 +552,9 @@
   <slot>hyunho_click()</slot>
   <slot>open_file()</slot>
   <slot>process()</slot>
+  <slot>open_render1()</slot>
+  <slot>open_render2()</slot>
+  <slot>start_render()</slot>
+  <slot>show_video()</slot>
  </slots>
 </ui>

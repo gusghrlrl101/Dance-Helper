@@ -659,8 +659,17 @@ def mmain(video="False",
 
         # get frames
         frames = getFrames(temps, frame_cnt, ratio)
-        frames = temps ##
-        frame_cnt = 1200 ##
+
+        if not exists(out_video_dir + '/img'):
+            makedirs(out_video_dir + '/img')
+
+        for cnt, img in enumerate(frames):
+            if cnt <= num:
+                continue
+            out_path = '%s/%04d.png' % (out_video_dir + '/img', cnt)
+            cv2.imwrite(out_path, img)
+        return
+        
         
 
         # make openpose pkl
@@ -714,7 +723,7 @@ def mmain(video="False",
         frame_cnt = len(op_joints)
 
         # openpose pose filter
-        op_filter = False ##
+        op_filter = True
         changed = []
         if op_filter:
             for cnt, img in enumerate(frames):

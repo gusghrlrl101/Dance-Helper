@@ -20,9 +20,27 @@ colors = {
     'yellow': [.5, .7, .75],
 }
 
+rotx=0.0
+roty=0.0
+rotz=0.0
+rotx2=0.0
+roty2=0.0
+rotz2=0.0
+path1 = sys.argv[1]
+path2 = sys.argv[2]
+
+op_pickle_path = (path1+'/hyunho.pkl')
+op_pickle_path2 = (path2+'/hyunho.pkl')
+with open(op_pickle_path,'rb') as f3:
+	op_datas = pickle.load(f3)
+	op_joints = op_datas['op_joints']
+with open(op_pickle_path2, 'rb') as f4:
+	op_datas2 = pickle.load(f4)
+	op_joints2 = op_datas2['op_joints']
+
 def _create_renderer(w=640,
                      h=480,
-                     rt=np.array([0, 0, 0]),
+                     rt=np.array([rotx,roty,rotz]),
                      t=np.zeros(3),
                      f=None,
                      c=None,
@@ -116,7 +134,7 @@ def render_model(verts, faces, w, h, rt, t, f, near=0.5, far=100, img=None):
 
     return imtmp
 
-def similarity(res, res2, ind, ind2, img2, op_joints, op_joints2): # ind는 model 인덱스, ind2는 compare 인덱스
+def similarity(res, res2, ind, ind2, img2): # ind는 model 인덱스, ind2는 compare 인덱스
 	result=0
 	indiSimil=np.zeros(12)
 	indiResult=np.zeros(12)
@@ -136,9 +154,9 @@ def similarity(res, res2, ind, ind2, img2, op_joints, op_joints2): # ind는 mode
 			print(str(vector)+"wrong")
 		index+=1
 
-	res = sum(indiSimil)
-	res /= len(indiSimil)
-	return res
+	similarity = sum(indiSimil)
+	similarity /= len(indiSimil)
+	print(str(similarity)+"%")
 
 def similarity2(res, res2):
 	vectors = [[60, 54], [54, 48], [63, 57], [57, 51], [21, 12], [12, 3], [24, 15], [15,6]]
@@ -163,7 +181,66 @@ def similarity2(res, res2):
 	similarity = sum(result) / len(result) * 100
 	print(str(similarity)+"%")
 
-"""
+
+## Load SMPL model (here we load the female model)
+m = load_model('./models/smpl/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
+m2 = load_model('./models/smpl/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
+
+## Assign attributes to renderer
+w, h = (1280, 720)
+color = colors['pink']
+
+# calculate average body parameter
+body = np.zeros(10)
+body2 = np.zeros(10)
+bodyIndex = np.zeros([10,20])
+bodyIndex2 = np.zeros([10,20])
+bodyTemp = np.zeros([10,20])
+bodyTemp2 = np.zeros([10,20])
+pkl_paths = sorted(glob(path1+'/*[0-9].pkl'))
+pkl_paths2 = sorted(glob(path2+'/*[0-9].pkl'))
+
+for ind, pkl_path in enumerate(pkl_paths):
+	with open(pkl_path,'r') as f:
+		res = pickle.load(f)
+	for i in range(10):
+		for j in range(20):
+			if res['betas'][i] >= j-10 and res['betas'][i] < j-9:
+				bodyIndex[i][j]+=1
+				bodyTemp[i][j]+=res['betas'][i]
+for ind, pkl_path2 in enumerate(pkl_paths2):
+	with open(pkl_path2,'r') as f2:
+		res2 = pickle.load(f2)
+	for i in range(10):
+		for j in range(20):
+			if res2['betas'][i] >= j-10 and res2['betas'][i] < j-9:
+				bodyIndex2[i][j]+=1
+				bodyTemp2[i][j]+=res2['betas'][i]
+
+indexMax=0
+indexMax2=0
+valueMax=0.0
+valueMax2=0.0
+
+for i in range(10):
+	for j in range(20):
+		if bodyIndex[i][j] > indexMax:
+			indexMax = bodyIndex[i][j]
+			valueMax = bodyTemp[i][j]
+		if bodyIndex2[i][j] > indexMax2:
+			indexMax2 = bodyIndex2[i][j]
+			valueMax2 = bodyTemp2[i][j]
+	body[i] = valueMax/(indexMax+sys.float_info.epsilon)
+	body2[i] = valueMax2/(indexMax2+sys.float_info.epsilon)
+	indexMax=0
+	indexMax2=0
+m.betas[:] = body[:]
+m2.betas[:] = body2[:]
+
+
+ind=0
+ind2=0
+sim = False
 # render model
 while True:
 	with open(pkl_paths[ind],'r') as f:
@@ -272,5 +349,5 @@ while True:
 		cv2.destroyAllWindows()
 		break
 
-"""
+
 		
