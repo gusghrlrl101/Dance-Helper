@@ -18,6 +18,12 @@ Implement Dance Helper Program with OpenPose, SMPLify in Python
 
 Python 2.7.12, OpenCV 4.0.0, SMPL, SMPLify, OpenPose, Caffe, OpenDR 0.78
 
+SMPL: http://smpl.is.tue.mpg.de/
+
+SMPLify: http://smplify.is.tue.mpg.de/
+
+OpenPose: https://github.com/CMU-Perceptual-Computing-Lab/openpose
+
 # Paper
 
 [향상된 3D 모델링과 유사도 측정을 이용한 동작 학습 도움.pdf (Dance Helper with Improved 3D Modeling and Similarity)](./paper.pdf)
