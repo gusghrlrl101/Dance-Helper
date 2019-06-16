@@ -162,3 +162,115 @@ def similarity2(res, res2):
 		print(str(1-rad/math.pi))
 	similarity = sum(result) / len(result) * 100
 	print(str(similarity)+"%")
+
+"""
+# render model
+while True:
+	with open(pkl_paths[ind],'r') as f:
+		res = pickle.load(f)
+	with open(pkl_paths2[ind2],'r') as f2:
+		res2 = pickle.load(f2)
+	print ind
+	print ind2
+	print pkl_paths[ind]
+	print pkl_paths2[ind2]
+	ff = res['f']
+	tt = res['cam_t']
+	m.pose[:] = res['pose']
+	ff2 = res2['f']
+	tt2 = res2['cam_t']
+	m2.pose[:] = res2['pose']
+	
+	while True :
+		if sim==False:
+			img = render_model(m, m.f, w, h, np.array([rotx,roty,rotz]), tt, ff)
+			img2 = render_model(m2, m2.f, w, h, np.array([rotx2,roty2,rotz2]), tt2, ff2)
+		## Show it using OpenCV
+			cv2.imshow('origin', img)
+			cv2.imshow('compare', img2)
+
+			print img
+			print img2
+		sim=False
+		
+		k = cv2.waitKey(0)
+		if k == 27: # ESC
+			break
+		elif k == ord('a'): # 원본 왼쪽
+			print("left")
+			roty += 0.1
+		elif k == ord('d'): # 원본 오른쪽
+			print("right")
+			roty -= 0.1
+		elif k == ord('w'): # 원본 위로
+			print("up")
+			rotx -= 0.1
+		elif k == ord('s'): # 원본 아래로
+			print("down")
+			rotx += 0.1
+		elif k == ord('q'): # 원본 왼쪽 대각선
+			print("left plane")
+			rotz -= 0.1
+		elif k == ord('e'): # 원본 오른쪽 대각선
+			print("right plane")
+			rotz += 0.1
+		elif k == ord('r'): # 둘다 reset
+			print("reset")
+			rotx2 = roty2 = rotz2 = rotx = roty = rotz = 0.0
+		elif k == ord('b'): # 둘다 back
+			print("back")
+			roty += np.pi
+			roty2 += np.pi
+		elif k == ord('j'):
+			print("left2")
+			roty2 += 0.1
+		elif k == ord('l'):
+			print("right2")
+			roty2 -= 0.1
+		elif k == ord('i'):
+			print("up2")
+			rotx2 -= 0.1
+		elif k == ord('k'):
+			print("down2")
+			rotx2 += 0.1
+		elif k == ord('u'):
+			print("left plane2")
+			rotz2 -= 0.1
+		elif k == ord('o'):
+			print("right plane2")
+			rotz2 += 0.1
+		elif k == ord('z'): # 원본 이전 프레임
+			print("original prev")
+			if ind > 0: # 0보다 안작아지게
+				ind -= 1
+			break
+		elif k == ord('x'): # 원본 다음 프레임
+			print("original next")
+			if ind < len(pkl_paths): # 원본 프레임 수보다 안커지게
+				ind += 1
+			break
+		elif k == ord('n'): # 비교 이전 프레임
+			print("compare prev")
+			if ind2 > 0: # 0보다 안작아지게
+				ind2 -= 1
+			break
+		elif k == ord('m'): # 비교 다음 프레임
+			print("compare next")
+			if ind2 < len(pkl_paths2): # 비교 프레임 수보다 안커지게
+				ind2 += 1
+			break
+		elif k == ord('y'): # 유사도 분석
+			print("similarity")
+			similarity(res,res2,ind,ind2,img2)
+			sim=True
+			cv2.imshow("compare",img2)
+		else:
+			ind += 1
+			ind2 += 1
+			break
+	if k == 27:
+		cv2.destroyAllWindows()
+		break
+
+"""
+		

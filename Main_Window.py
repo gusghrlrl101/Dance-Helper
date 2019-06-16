@@ -3,17 +3,17 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, Qt
 from baseUI import Ui_MainWindow as Ui_MainWindow_base
-from opmlify.opmlify import mmain
 import cv2
 import os
 import atexit
 import numpy as np
-from render_similarity import render_model, similarity
 from smpl_webuser.serialization import load_model
 from glob import glob
 import cPickle as pickle
 import sys
 
+from opmlify.opmlify import mmain
+from render_similarity import render_model, similarity
 
 class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 	def __init__(self):
@@ -30,6 +30,8 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		self.isFirst = True
 
 		self.compared = False
+		self.mode1 = 0
+		self.mode2 = 0
 		self.m = load_model('./models/smpl/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
 		self.m2 = load_model('./models/smpl/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
 		self.pkl_paths = []
@@ -59,16 +61,15 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		self.label_sim_title.hide()
 
 		model_temp = QStandardItemModel()
-		for dirpath, dirname, filename in os.walk('opmlify/result'):
+		RESULT_DIR = 'opmlify/result'
+		for dirpath, dirname, filename in os.walk(RESULT_DIR):
 			if self.isFirst:
 				self.isFirst = False
 				for a in dirname:
 					model_temp.appendRow(QStandardItem(a))
+					self.file_paths.append(RESULT_DIR + '/' + a)
 				self.listView1.setModel(model_temp)
 				self.listView2.setModel(model_temp)
-			else:
-				self.file_paths.append(dirpath)
-
 		atexit.register(self.exit_handler)
 
 	def exit_handler(self):
@@ -90,8 +91,9 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		self.frame = int(frame)
 
 		# set data
+		img = img.scaledToHeight(180)
 		self.label_img.setPixmap(img)
-		self.label_img.setScaledContents(True)
+		self.label_img.setScaledContents(False)
 		self.label_img.show()
 		self.label_path.setText(self.file_name)
 		self.label_imageSize.setText(imageSize)
@@ -151,26 +153,27 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		self.processOn = False
 		self.btn_process.setEnabled(True)
 
-	def open_render1(self): #폴더명 두 개 받아서 rendering해서 넘기면서 비교 가능하게
-
-                # sys(python render_similarity.py) 하면 될 듯?
-                # 아니면 imshow 대신에 QT에 띄울까
-                # reset, back, 유사도 측정 정도만 버튼 만들까
-                #QfileDialog dialog(self)
-#                QFileDialog.setFileMode(QFileDialog, QFileDialog.Directory)
-
- #               self.folder_name1=str(QFileDialog.getExistingDirectory())
-#		self.label_folder1.setText(self.folder_name1)
+	def open_render1(self): 
 		folder1, _ = QFileDialog.getOpenFileName(self, 'Open Folder','','Folder')
 		self.folder_name1 = str(folder1)
 		self.label_folder1.setText(self.folder_name1)
 
         def open_render2(self):
-                #QfileDialog dialog(self)
                 QFileDialog.setFileMode(QFileDialog.Directory)
 
                 self.folder_name2=str(QFileDialog.getExistingDirectory())
 		self.label_folder2.setText(self.folder_name2)
+
+	def change1(self):
+		self.mode1 += 1
+		if self.mode1 == 3:
+			self.mode1 = 0
+		self.myshow()
+	def change2(self):
+		self.mode2 += 1
+		if self.mode2 == 3:
+			self.mode2 = 0
+		self.myshow()
 
         def start_render(self):
 		self.m = load_model('./models/smpl/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
@@ -198,6 +201,8 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 		self.h = None
 		self.w2 = None
 		self.h2 = None
+		self.mode1 = 0
+		self.mode2 = 0
 
 		sel1 = self.listView1.currentIndex().row()
 		sel2 = self.listView2.currentIndex().row()
@@ -283,37 +288,112 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 	def myshow(self):
 		if not self.compared:
 			return
-		with open(self.pkl_paths[self.ind],'r') as f:
-			self.res = pickle.load(f)
-		with open(self.pkl_paths2[self.ind2],'r') as f2:
-			self.res2 = pickle.load(f2)
-		ff = self.res['f']
-		tt = self.res['cam_t']
-		self.m.pose[:] = self.res['pose']
-		ff2 = self.res2['f']
-		tt2 = self.res2['cam_t']
-		self.m2.pose[:] = self.res2['pose']
+		if self.mode1 == 0:
+			with open(self.pkl_paths[self.ind],'r') as f:
+				self.res = pickle.load(f) 
+			ff = self.res['f']
+			tt = self.res['cam_t']
+			self.m.pose[:] = self.res['pose']
+			self.img = render_model(self.m, self.m.f, self.w, self.h, np.array([self.rotx, self.roty,  self.rotz]), tt, ff)
+			# convert to QImage
+			img = 255 * self.img
+			img = img.astype(np.uint8)
+			img_RGB = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+		elif self.mode1 == 1:
+			temp_paths = self.pkl_paths[self.ind][:-8]
+			img_path = temp_paths + 'img/' + self.pkl_paths[self.ind][-8:-4] + '.png'
+			print img_path
+			self.img = cv2.imread(img_path)
+			img_RGB = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
+		elif self.mode1 == 2:
+			with open(self.pkl_paths[self.ind],'r') as f:
+				self.res = pickle.load(f) 
+			ff = self.res['f']
+			tt = self.res['cam_t']
+			self.m.pose[:] = self.res['pose']
+			self.img = render_model(self.m, self.m.f, self.w, self.h, np.array([self.rotx, self.roty,  self.rotz]), tt, ff)
+			# convert to QImage
+			img = 255 * self.img
+			img = img.astype(np.uint8)
+			img_RGB = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
 
-		self.img = render_model(self.m, self.m.f, self.w, self.h, np.array([self.rotx, self.roty,  self.rotz]), tt, ff)
-		self.img2 = render_model(self.m2, self.m2.f, self.w2, self.h2, np.array([self.rotx2, self.roty2, self.rotz2]), tt2, ff2)
+			temp_paths = self.pkl_paths[self.ind][:-8]
+			img_path = temp_paths + 'img/' + self.pkl_paths[self.ind][-8:-4] + '.png'
+			self.img = cv2.imread(img_path)
+			img_RGB2 = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
 
-		# convert to QImage
-		img = 255 * self.img
-		img = img.astype(np.uint8)
-		img_RGB = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+			rows, cols, channels = img_RGB.shape
+			roi = img_RGB2[:rows, :cols]
+
+			img2gray = cv2.cvtColor(img_RGB, cv2.COLOR_RGB2GRAY)
+			ret, mask = cv2.threshold(img2gray, 254, 255, cv2.THRESH_BINARY)
+			mask2 = cv2.bitwise_not(mask)
+			
+			bg = cv2.bitwise_and(roi, roi, mask=mask)
+			fg = cv2.bitwise_and(img_RGB, img_RGB, mask=mask2)
+			img_RGB = cv2.add(bg, fg)
+
+			
 		qImg = QImage(img_RGB.data, img_RGB.shape[1], img_RGB.shape[0], img_RGB.shape[1] * 3, QImage.Format_RGB888)
 		qpImg = QPixmap(qImg)
+		qpImg = qpImg.scaledToHeight(360)
 		self.label_show1.setPixmap(qpImg)
-		self.label_show1.setScaledContents(True)
+		self.label_show1.setScaledContents(False)
 		self.label_show1.show()
 
-		img2 = 255 * self.img2
-		img2 = img2.astype(np.uint8)
-		img_RGB = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+		if self.mode2 == 0:
+			with open(self.pkl_paths2[self.ind2],'r') as f2:
+				self.res2 = pickle.load(f2)
+			ff2 = self.res2['f']
+			tt2 = self.res2['cam_t']
+			self.m2.pose[:] = self.res2['pose']
+			self.img2 = render_model(self.m2, self.m2.f, self.w2, self.h2, np.array([self.rotx2, self.roty2, self.rotz2]), tt2, ff2)
+			# convert to QImage
+			img = 255 * self.img2
+			img = img.astype(np.uint8)
+			img_RGB = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+			self.img2 = img_RGB
+		elif self.mode2 == 1:
+			temp_paths = self.pkl_paths2[self.ind2][:-8]
+			img_path = temp_paths + 'img/' + self.pkl_paths2[self.ind2][-8:-4] + '.png'
+			self.img2 = cv2.imread(img_path)
+			img_RGB = cv2.cvtColor(self.img2, cv2.COLOR_BGR2RGB)
+			self.img2 = img_RGB
+		elif self.mode2 == 2:
+			with open(self.pkl_paths2[self.ind2],'r') as f:
+				self.res2 = pickle.load(f) 
+			ff2 = self.res2['f']
+			tt2 = self.res2['cam_t']
+			self.m2.pose[:] = self.res2['pose']
+			self.img2 = render_model(self.m2, self.m2.f, self.w2, self.h2, np.array([self.rotx2, self.roty2,  self.rotz2]), tt2, ff2)
+			# convert to QImage
+			img = 255 * self.img2
+			img = img.astype(np.uint8)
+			img_RGB = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+
+			temp_paths = self.pkl_paths2[self.ind2][:-8]
+			img_path = temp_paths + 'img/' + self.pkl_paths2[self.ind2][-8:-4] + '.png'
+			self.img2 = cv2.imread(img_path)
+			img_RGB2 = cv2.cvtColor(self.img2, cv2.COLOR_BGR2RGB)
+
+			rows, cols, channels = img_RGB.shape
+			roi = img_RGB2[:rows, :cols]
+
+			img2gray = cv2.cvtColor(img_RGB, cv2.COLOR_RGB2GRAY)
+			ret, mask = cv2.threshold(img2gray, 254, 255, cv2.THRESH_BINARY)
+			mask2 = cv2.bitwise_not(mask)
+			
+			bg = cv2.bitwise_and(roi, roi, mask=mask)
+			fg = cv2.bitwise_and(img_RGB, img_RGB, mask=mask2)
+			img_RGB = cv2.add(bg, fg)
+			self.img2 = img_RGB
+			
+			
 		qImg = QImage(img_RGB.data, img_RGB.shape[1], img_RGB.shape[0], img_RGB.shape[1] * 3, QImage.Format_RGB888)
 		qpImg = QPixmap(qImg)
+		qpImg = qpImg.scaledToHeight(360)
 		self.label_show2.setPixmap(qpImg)
-		self.label_show2.setScaledContents(True)
+		self.label_show2.setScaledContents(False)
 		self.label_show2.show()
 		self.label_sim_title.hide()
 		self.label_sim.hide()
@@ -384,19 +464,18 @@ class Ui_MainWindow(QMainWindow, Ui_MainWindow_base):
 			elif k == ord('Y'): # 유사도 분석
 				sim = similarity(self.res, self.res2, self.ind, self.ind2, self.img2, self.op_joints, self.op_joints2)
 
-				img2 = 255 * self.img2
-				img2 = img2.astype(np.uint8)
-				img_RGB = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+				img_RGB = self.img2
 				qImg = QImage(img_RGB.data, img_RGB.shape[1], img_RGB.shape[0], img_RGB.shape[1] * 3, QImage.Format_RGB888)
 				qpImg = QPixmap(qImg)
+				qpImg = qpImg.scaledToHeight(360)
 				self.label_show2.setPixmap(qpImg)
-				self.label_show2.setScaledContents(True)
+				self.label_show2.setScaledContents(False)
 				self.label_show2.show()
 				self.label_sim_title.show()
 				self.label_sim.setText(str(format(sim, '.2f')) + '%')
 				self.label_sim.show()
 				
-			else:
+			elif k == ord('V'): # double frame
 				self.ind += 1
 				self.ind2 += 1
 				self.myshow()
@@ -412,7 +491,7 @@ class Worker(QObject):
 
 	def process(self):
 		print "@@@ worker process", self.cur
-		res, isFinish = mmain(self.out_name, True, self.cur)
+		res, isFinish = mmain(video=self.out_name, ui=True, num=self.cur, female=True, opFilter=True, gamma=1.0)
 		self.cur = res
 
 		if isFinish:

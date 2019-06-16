@@ -350,42 +350,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QListView" name="listView3">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>90</y>
-      <width>151</width>
-      <height>192</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>60</y>
-      <width>121</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Model</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btn_show">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>290</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Show Video</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_sim_title">
     <property name="geometry">
      <rect>
@@ -438,17 +402,30 @@
      <string>2] View Model</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QPushButton" name="btn_change2">
     <property name="geometry">
      <rect>
-      <x>1110</x>
-      <y>0</y>
+      <x>900</x>
+      <y>370</y>
       <width>151</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>3] Show Video</string>
+     <string>Change mode</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_change1">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>380</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Change mode</string>
     </property>
    </widget>
   </widget>
@@ -522,8 +499,8 @@
    <slot>start_render()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>696</x>
-     <y>308</y>
+     <x>720</x>
+     <y>346</y>
     </hint>
     <hint type="destinationlabel">
      <x>764</x>
@@ -532,18 +509,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_show</sender>
+   <sender>btn_change1</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>show_video()</slot>
+   <slot>change1()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1217</x>
-     <y>292</y>
+     <x>384</x>
+     <y>430</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1279</x>
-     <y>377</y>
+     <x>447</x>
+     <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_change2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1024</x>
+     <y>433</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1112</x>
+     <y>426</y>
     </hint>
    </hints>
   </connection>
@@ -556,5 +549,7 @@
   <slot>open_render2()</slot>
   <slot>start_render()</slot>
   <slot>show_video()</slot>
+  <slot>change1()</slot>
+  <slot>change2()</slot>
  </slots>
 </ui>

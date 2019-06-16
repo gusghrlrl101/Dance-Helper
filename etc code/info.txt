@@ -1,0 +1,38 @@
+[pose]
+X Z Y
+0 1 2 : Rotation 필요없음		0
+3 4 5 : Hip L				1
+6 7 8 : Hip R				2
+9 10 11 : Lower Spine 아래 척추		3
+12 13 14 : Knee L			4
+15 16 17 : Knee R			5
+18 19 20 : Mid Spine 중간 척추		6
+21 22 23 : Ankle L 발목			7
+24 25 26 : Ankle R 발목			8
+27 28 29 : Upper Spine 위 척추		9
+30 31 32 : Toes L			10
+33 34 35 : Toes R			11
+36 37 38 : Neck				12
+39 40 41 : Clavicle L 쇄골		13
+42 43 44 : Clavicle R			14
+45 46 47 : Head				15
+48 49 50 : Shoulder L			16
+51 52 53 : Shoulder R			17
+54 55 56 : Elbow L			18
+57 58 59 : Elbow R			19
+60 61 62 : Wrist L			20
+63 64 65 : Wrist R			21
+66 67 68 : Fingers L 필요없음		22
+69 70 71 : Fingers R 필요없음		23
+
+[body]
+0 : 체형
+1 : 허벅지
+2 : 뱃살
+3 : 골반
+4 : 팔, 상체 길이
+5 : ??
+6 : 다리 길이
+7 : 팔 좌우 
+8 : 허벅지
+9 : 상체
